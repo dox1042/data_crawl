@@ -1,3 +1,4 @@
+# crawler.py
 import scrapy
 from scrapy_playwright.page import PageMethod
 from userinput import UserInput
@@ -15,15 +16,21 @@ class Crawler(scrapy.Spider):
     async def parse(self, response):
         """
         Parses the response and extracts URLs of .txt and .pdf files.
+        Handles JavaScript rendering and potential pagination.
         """
         await response.page.wait_for_selector("body")  # Wait for page to load
 
+        # Extract .txt and .pdf links (adjust XPath as needed)
         self.txt_list.extend(response.xpath("//a[contains(@href, '.txt')]/@href").getall())
         self.pdf_list.extend(response.xpath("//a[contains(@href, '.pdf')]/@href").getall())
 
-        # For complex structures, inspect the page and adjust the XPath expressions
-        # Example:
+        # Example for more complex structure:
         # self.txt_list.extend(response.xpath("//div[@id='content']//a[contains(@href, '.txt')]/@href").getall())
+
+        # Handle pagination (adjust XPath as needed)
+        next_page = response.xpath("//a[contains(text(), 'Next')]/@href").get()
+        if next_page:
+            yield response.follow(next_page, callback=self.parse)
 
     def get_txt_list(self):
         """
