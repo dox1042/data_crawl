@@ -1,7 +1,9 @@
+# downloader.py
 import os
 from tqdm import tqdm
 from crawler import Crawler
 from userinput import UserInput
+import scrapy
 
 class Downloader:
     def __init__(self):
