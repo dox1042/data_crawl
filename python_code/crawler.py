@@ -36,6 +36,8 @@ class Crawler(scrapy.Spider):
         """
         Returns the list of .txt file URLs.
         """
+        with open('/logs/logfile.txt', 'w') as f:
+            print(self.txt_list, file=f)
         return self.txt_list
 
     def get_pdf_list(self):
